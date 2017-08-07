@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.設定ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.開始新遊戲ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.結束ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.關於ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayout = new System.Windows.Forms.TableLayoutPanel();
@@ -44,12 +45,15 @@
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
-            this.開始新遊戲ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip.SuspendLayout();
             this.tableLayout.SuspendLayout();
+            this.toolStripContainer.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
             this.toolStripContainer.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer.SuspendLayout();
+            this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -77,10 +81,17 @@
             this.設定ToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.設定ToolStripMenuItem.Text = "遊戲";
             // 
+            // 開始新遊戲ToolStripMenuItem
+            // 
+            this.開始新遊戲ToolStripMenuItem.Name = "開始新遊戲ToolStripMenuItem";
+            this.開始新遊戲ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.開始新遊戲ToolStripMenuItem.Text = "開始新遊戲";
+            this.開始新遊戲ToolStripMenuItem.Click += new System.EventHandler(this.開始新遊戲ToolStripMenuItem_Click);
+            // 
             // 結束ToolStripMenuItem
             // 
             this.結束ToolStripMenuItem.Name = "結束ToolStripMenuItem";
-            this.結束ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.結束ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.結束ToolStripMenuItem.Text = "結束";
             this.結束ToolStripMenuItem.Click += new System.EventHandler(this.結束ToolStripMenuItem_Click);
             // 
@@ -108,7 +119,7 @@
             this.tableLayout.Controls.Add(this.button3, 2, 0);
             this.tableLayout.Controls.Add(this.button2, 1, 0);
             this.tableLayout.Controls.Add(this.button1, 0, 0);
-            this.tableLayout.Location = new System.Drawing.Point(19, 16);
+            this.tableLayout.Location = new System.Drawing.Point(19, 12);
             this.tableLayout.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayout.Name = "tableLayout";
             this.tableLayout.RowCount = 3;
@@ -121,6 +132,7 @@
             // 
             // button9
             // 
+            this.button9.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.button9.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button9.Font = new System.Drawing.Font("Calibri", 50.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button9.Location = new System.Drawing.Point(201, 201);
@@ -133,6 +145,7 @@
             // 
             // button8
             // 
+            this.button8.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.button8.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button8.Font = new System.Drawing.Font("Calibri", 50.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button8.Location = new System.Drawing.Point(102, 201);
@@ -145,6 +158,7 @@
             // 
             // button7
             // 
+            this.button7.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.button7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button7.Font = new System.Drawing.Font("Calibri", 50.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button7.Location = new System.Drawing.Point(3, 201);
@@ -157,6 +171,7 @@
             // 
             // button6
             // 
+            this.button6.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.button6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button6.Font = new System.Drawing.Font("Calibri", 50.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button6.Location = new System.Drawing.Point(201, 102);
@@ -169,6 +184,7 @@
             // 
             // button5
             // 
+            this.button5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.button5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button5.Font = new System.Drawing.Font("Calibri", 50.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button5.Location = new System.Drawing.Point(102, 102);
@@ -181,6 +197,7 @@
             // 
             // button4
             // 
+            this.button4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.button4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button4.Font = new System.Drawing.Font("Calibri", 50.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button4.Location = new System.Drawing.Point(3, 102);
@@ -193,6 +210,7 @@
             // 
             // button3
             // 
+            this.button3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.button3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button3.Font = new System.Drawing.Font("Calibri", 50.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button3.Location = new System.Drawing.Point(201, 3);
@@ -205,6 +223,7 @@
             // 
             // button2
             // 
+            this.button2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.button2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button2.Font = new System.Drawing.Font("Calibri", 50.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button2.Location = new System.Drawing.Point(102, 3);
@@ -217,6 +236,7 @@
             // 
             // button1
             // 
+            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.button1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button1.Font = new System.Drawing.Font("Calibri", 50.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.Location = new System.Drawing.Point(3, 3);
@@ -230,16 +250,20 @@
             // toolStripContainer
             // 
             // 
+            // toolStripContainer.BottomToolStripPanel
+            // 
+            this.toolStripContainer.BottomToolStripPanel.Controls.Add(this.statusStrip);
+            // 
             // toolStripContainer.ContentPanel
             // 
             this.toolStripContainer.ContentPanel.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.toolStripContainer.ContentPanel.Controls.Add(this.tableLayout);
             this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding(0);
-            this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(334, 318);
+            this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size(334, 314);
             this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer.Name = "toolStripContainer";
-            this.toolStripContainer.Size = new System.Drawing.Size(334, 342);
+            this.toolStripContainer.Size = new System.Drawing.Size(334, 362);
             this.toolStripContainer.TabIndex = 2;
             this.toolStripContainer.TabStop = false;
             this.toolStripContainer.Text = "toolStripContainer";
@@ -248,32 +272,46 @@
             // 
             this.toolStripContainer.TopToolStripPanel.Controls.Add(this.menuStrip);
             // 
-            // 開始新遊戲ToolStripMenuItem
+            // statusStrip
             // 
-            this.開始新遊戲ToolStripMenuItem.Name = "開始新遊戲ToolStripMenuItem";
-            this.開始新遊戲ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.開始新遊戲ToolStripMenuItem.Text = "開始新遊戲";
-            this.開始新遊戲ToolStripMenuItem.Click += new System.EventHandler(this.開始新遊戲ToolStripMenuItem_Click);
+            this.statusStrip.Dock = System.Windows.Forms.DockStyle.None;
+            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel});
+            this.statusStrip.Location = new System.Drawing.Point(0, 0);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(334, 24);
+            this.statusStrip.TabIndex = 0;
+            // 
+            // toolStripStatusLabel
+            // 
+            this.toolStripStatusLabel.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.toolStripStatusLabel.Name = "toolStripStatusLabel";
+            this.toolStripStatusLabel.Size = new System.Drawing.Size(78, 19);
+            this.toolStripStatusLabel.Text = "輪到玩家1";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(334, 342);
+            this.ClientSize = new System.Drawing.Size(334, 362);
             this.Controls.Add(this.toolStripContainer);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip;
-            this.MinimumSize = new System.Drawing.Size(350, 380);
+            this.MinimumSize = new System.Drawing.Size(350, 400);
             this.Name = "MainForm";
             this.Text = "OOXX";
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.tableLayout.ResumeLayout(false);
+            this.toolStripContainer.BottomToolStripPanel.ResumeLayout(false);
+            this.toolStripContainer.BottomToolStripPanel.PerformLayout();
             this.toolStripContainer.ContentPanel.ResumeLayout(false);
             this.toolStripContainer.TopToolStripPanel.ResumeLayout(false);
             this.toolStripContainer.TopToolStripPanel.PerformLayout();
             this.toolStripContainer.ResumeLayout(false);
             this.toolStripContainer.PerformLayout();
+            this.statusStrip.ResumeLayout(false);
+            this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -296,6 +334,8 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ToolStripMenuItem 開始新遊戲ToolStripMenuItem;
+        private System.Windows.Forms.StatusStrip statusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
     }
 }
 

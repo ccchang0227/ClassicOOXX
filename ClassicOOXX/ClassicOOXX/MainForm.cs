@@ -12,7 +12,7 @@ using System.IO;
 
 namespace ClassicOOXX
 {
-    public partial class MainForm : Form
+    public partial class MainForm : Form, IGamePadCallback
     {
 
         private GamePad MainGamePad;
@@ -48,16 +48,24 @@ namespace ClassicOOXX
             Button button = (Button)sender;
             int x = tableLayout.GetRow(button);
             int y = tableLayout.GetColumn(button);
-            System.Console.Out.WriteLine("x=" + x + ", y=" + y);
-            if (MainGamePad.Selectable(x, y))
+            
+            if (!MainGamePad.Selectable(x, y)) { return; }
+
+            if (MainGamePad.Turn == GamePad.Player1Id)
             {
-                button.Text = "X";
-                button.Enabled = false;
-                int winnerId = MainGamePad.Select(x, y, GamePad.PlayerId);
-                if (winnerId != GamePad.NoneId)
-                {
-                    MessageBox.Show("" + winnerId, "贏家", MessageBoxButtons.OK);
-                }
+                //button.Text = "O";
+                button.BackgroundImage = Properties.Resources.O;
+            }
+            else
+            {
+                //button.Text = "X";
+                button.BackgroundImage = Properties.Resources.X;
+            }
+            button.Enabled = false;
+
+            if (!MainGamePad.Select(x, y, MainGamePad.Turn))
+            {
+                MainGamePad.TurnChange();
             }
         }
         
@@ -73,10 +81,11 @@ namespace ClassicOOXX
 
         private void Restart()
         {
-            MainGamePad = new GamePad();
+            MainGamePad = new GamePad(this);
             foreach (Button item in tableLayout.Controls.Cast<Button>())
             {
                 item.Text = "";
+                item.BackgroundImage = null;
                 item.Enabled = true;
             }
         }
@@ -85,6 +94,94 @@ namespace ClassicOOXX
         {
             Restart();
         }
+
+        private void EnableAllUnclickButtons()
+        {
+            foreach (Button item in tableLayout.Controls.Cast<Button>())
+            {
+                if (item.BackgroundImage == null)
+                {
+                    item.Enabled = true;
+                }
+            }
+        }
+
+        private void DisableAllUnclickButtons()
+        {
+            foreach (Button item in tableLayout.Controls.Cast<Button>())
+            {
+                if (item.BackgroundImage == null)
+                {
+                    item.Enabled = false;
+                }
+            }
+        }
+
+        private void GameOver()
+        {
+            foreach (Button item in tableLayout.Controls.Cast<Button>())
+            {
+                item.Enabled = false;
+            }
+        }
+
+        // MARK - IGamePadCallback
+
+        public void OnTurnChanged(int newTurn)
+        {
+
+            if (newTurn == GamePad.Player1Id)
+            {
+                toolStripStatusLabel.Text = "輪到玩家1";
+            }
+            else if (newTurn == GamePad.Player2Id)
+            {
+                toolStripStatusLabel.Text = "輪到玩家2";
+            }
+            else if (newTurn == GamePad.ComId)
+            {
+                toolStripStatusLabel.Text = "輪到電腦";
+            }
+            
+        }
+
+        public void OnGameStateChanged(int winnerId, State newState)
+        {
+            switch (newState)
+            {
+                case State.Draw:
+                    {
+                        GameOver();
+                        toolStripStatusLabel.Text = "平手，遊戲結束";
+                        MessageBox.Show("平手", "遊戲結束", MessageBoxButtons.OK);
+
+                        break;
+                    }
+                case State.Finished:
+                    {
+                        GameOver();
+                        if (winnerId != GamePad.NoneId)
+                        {
+                            String winner = "";
+                            if (winnerId == GamePad.Player1Id) { winner = "玩家1"; }
+                            else if (winnerId == GamePad.Player2Id) { winner = "玩家2"; }
+                            else if (winnerId == GamePad.ComId) { winner = "電腦"; }
+
+                            toolStripStatusLabel.Text = "遊戲結束，"+winner+"贏了";
+                            MessageBox.Show("贏家:\n" + winner, "遊戲結束", MessageBoxButtons.OK);
+                        }
+                        else
+                        {
+                            toolStripStatusLabel.Text = "平手，遊戲結束";
+                            MessageBox.Show("平手", "遊戲結束", MessageBoxButtons.OK);
+                        }
+                        break;
+                    }
+                default:
+                    break;
+            }
+        }
+        
     }
-    
+
 }

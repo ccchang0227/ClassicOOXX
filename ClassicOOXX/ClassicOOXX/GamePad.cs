@@ -7,30 +7,68 @@ using System.Drawing;
 
 namespace ClassicOOXX
 {
+
+    public enum State
+    {
+        Playing,
+        Draw,
+        Finished
+    }
+
+    public interface IGamePadCallback
+    {
+        void OnTurnChanged(int newTurn);
+        void OnGameStateChanged(int winnerId, State newState);
+    }
+
     public class GamePad
     {
+        
+        public State GameState { get; private set; }
+
+        // 空白
         public static int NoneId
         {
             get { return 0; }
         }
-        public static int PlayerId
+        // 玩家1
+        public static int Player1Id
         {
             get { return 1; }
         }
+        // 玩家2
+        public static int Player2Id
+        {
+            get { return 2; }
+        }
+        // 電腦
         public static int ComId
         {
             get { return -1; }
         }
 
+        // 棋盤大小
         public static int PadSize
         {
             get { return 3; }
         }
 
         public int[][] PadValues { get; }
+        private int BlankCnt = PadSize ^ 2;
 
-        public GamePad()
+        public int[] Players = { Player1Id, Player2Id };
+        public int Turn
         {
+            get;
+            private set;
+        }
+
+        private IGamePadCallback Callback = null;
+
+        public GamePad(IGamePadCallback callback)
+        {
+            this.Callback = callback;
+
             PadValues = new int[PadSize][];
             for (int i = 0; i < PadSize; i++)
             {
@@ -40,7 +78,28 @@ namespace ClassicOOXX
                     PadValues[i][j] = NoneId;
                 }
             }
-            
+            GameState = State.Playing;
+            BlankCnt = (int)Math.Pow(PadSize, 2);
+
+            Turn = Players[0];
+        }
+
+        // 換回合
+        public void TurnChange()
+        {
+            if (Turn == Players[0])
+            {
+                Turn = Players[1];
+            }
+            else
+            {
+                Turn = Players[0];
+            }
+
+            if (Callback != null)
+            {
+                Callback.OnTurnChanged(Turn);
+            }
         }
 
         // 是否可以選點
@@ -53,16 +112,28 @@ namespace ClassicOOXX
         }
 
         // 選點
-        public int Select(int x, int y, int id)
+        public bool Select(int x, int y, int id)
         {
             if (!Selectable(x, y)) { return EvaluateWinner(); }
+            if (id == NoneId) { return EvaluateWinner(); }
 
             PadValues[x][y] = id;
+            BlankCnt--;
+            if (BlankCnt == 0)
+            {
+                GameState = State.Draw;
+            }
+
             return EvaluateWinner();
         }
 
-        // 找贏家
-        private int EvaluateWinner()
+        /**
+         * 找贏家
+         * FIXME: 下了新了點，應該只要多計算和新的點有關連的點就好
+         * 
+         * @return 回傳遊戲是否結束，true/false
+         */
+        private bool EvaluateWinner()
         {
             // 先找2條對角
             // 左上->右下
@@ -81,7 +152,14 @@ namespace ClassicOOXX
                     if (initVal == val) { successCnt++; }
                     else { break; }
                 }
-                if (successCnt == PadSize) { return initVal; }
+                if (successCnt == PadSize) {
+                    GameState = State.Finished;
+                    if (Callback != null)
+                    {
+                        Callback.OnGameStateChanged(initVal, GameState);
+                    }
+                    return true;
+                }
             }
             // 右上->左下
             x = 0;
@@ -99,7 +177,15 @@ namespace ClassicOOXX
                     if (initVal == val) { successCnt++; }
                     else { break; }
                 }
-                if (successCnt == PadSize) { return initVal; }
+                if (successCnt == PadSize)
+                {
+                    GameState = State.Finished;
+                    if (Callback != null)
+                    {
+                        Callback.OnGameStateChanged(initVal, GameState);
+                    }
+                    return true;
+                }
             }
 
             for (int i = 0; i < PadSize; i++)
@@ -129,9 +215,17 @@ namespace ClassicOOXX
                             if (initVal == val) { successCnt++; }
                             else { break; }
                         }
-                        if (successCnt == PadSize) { return initVal; }
+                        if (successCnt == PadSize)
+                        {
+                            GameState = State.Finished;
+                            if (Callback != null)
+                            {
+                                Callback.OnGameStateChanged(initVal, GameState);
+                            }
+                            return true;
+                        }
                     }
-                    else
+                    if (i >= 0 && j == 0)
                     {
                         // 往右找
                         y = j;
@@ -142,12 +236,29 @@ namespace ClassicOOXX
                             if (initVal == val) { successCnt++; }
                             else { break; }
                         }
-                        if (successCnt == PadSize) { return initVal; }
+                        if (successCnt == PadSize)
+                        {
+                            GameState = State.Finished;
+                            if (Callback != null)
+                            {
+                                Callback.OnGameStateChanged(initVal, GameState);
+                            }
+                            return true;
+                        }
                     }
                 }
             }
 
-            return NoneId;
+            if (GameState == State.Draw)
+            {
+                if (Callback != null)
+                {
+                    Callback.OnGameStateChanged(NoneId, GameState);
+                }
+                return true;
+            }
+
+            return false;
         }
         
     }
