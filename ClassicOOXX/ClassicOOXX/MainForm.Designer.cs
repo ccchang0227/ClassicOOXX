@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.設定ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,6 +48,7 @@
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.graphicalOverlay = new CodeProject.GraphicalOverlay(this.components);
             this.menuStrip.SuspendLayout();
             this.tableLayout.SuspendLayout();
             this.toolStripContainer.BottomToolStripPanel.SuspendLayout();
@@ -289,6 +291,10 @@
             this.toolStripStatusLabel.Size = new System.Drawing.Size(78, 19);
             this.toolStripStatusLabel.Text = "輪到玩家1";
             // 
+            // graphicalOverlay
+            // 
+            this.graphicalOverlay.Paint += new System.EventHandler<System.Windows.Forms.PaintEventArgs>(this.graphicalOverlay_Paint);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -336,6 +342,7 @@
         private System.Windows.Forms.ToolStripMenuItem 開始新遊戲ToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
+        private CodeProject.GraphicalOverlay graphicalOverlay;
     }
 }
 

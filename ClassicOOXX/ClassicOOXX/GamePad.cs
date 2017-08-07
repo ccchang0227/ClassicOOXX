@@ -127,9 +127,10 @@ namespace ClassicOOXX
             return EvaluateWinner();
         }
 
+        private List<List<Point>> successLines = new List<List<Point>>();
+
         /**
          * 找贏家
-         * FIXME: 下了新了點，應該只要多計算和新的點有關連的點就好
          * 
          * @return 回傳遊戲是否結束，true/false
          */
@@ -140,6 +141,9 @@ namespace ClassicOOXX
             int x = 0;
             int y = 0;
             int initVal = PadValues[x][y];
+
+            int winnerId = NoneId;
+
             int successCnt = 0;
             if (initVal != 0)
             {
@@ -153,12 +157,15 @@ namespace ClassicOOXX
                     else { break; }
                 }
                 if (successCnt == PadSize) {
+                    winnerId = initVal;
                     GameState = State.Finished;
-                    if (Callback != null)
+
+                    List<Point> points = new List<Point>
                     {
-                        Callback.OnGameStateChanged(initVal, GameState);
-                    }
-                    return true;
+                        new Point(0, 0),
+                        new Point(PadSize - 1, PadSize - 1)
+                    };
+                    successLines.Add(points);
                 }
             }
             // 右上->左下
@@ -179,12 +186,18 @@ namespace ClassicOOXX
                 }
                 if (successCnt == PadSize)
                 {
-                    GameState = State.Finished;
-                    if (Callback != null)
+                    if (winnerId == NoneId)
                     {
-                        Callback.OnGameStateChanged(initVal, GameState);
+                        winnerId = initVal;
+                        GameState = State.Finished;
                     }
-                    return true;
+
+                    List<Point> points = new List<Point>
+                    {
+                        new Point(0, PadSize - 1),
+                        new Point(PadSize - 1, 0)
+                    };
+                    successLines.Add(points);
                 }
             }
 
@@ -217,14 +230,22 @@ namespace ClassicOOXX
                         }
                         if (successCnt == PadSize)
                         {
-                            GameState = State.Finished;
-                            if (Callback != null)
+                            if (winnerId == NoneId)
                             {
-                                Callback.OnGameStateChanged(initVal, GameState);
+                                winnerId = initVal;
+                                GameState = State.Finished;
                             }
-                            return true;
+
+                            List<Point> points = new List<Point>
+                            {
+                                new Point(0, j),
+                                new Point(PadSize - 1, j)
+                            };
+                            successLines.Add(points);
                         }
                     }
+
+                    successCnt = 1;
                     if (i >= 0 && j == 0)
                     {
                         // 往右找
@@ -238,12 +259,18 @@ namespace ClassicOOXX
                         }
                         if (successCnt == PadSize)
                         {
-                            GameState = State.Finished;
-                            if (Callback != null)
+                            if (winnerId == NoneId)
                             {
-                                Callback.OnGameStateChanged(initVal, GameState);
+                                winnerId = initVal;
+                                GameState = State.Finished;
                             }
-                            return true;
+
+                            List<Point> points = new List<Point>
+                            {
+                                new Point(i, 0),
+                                new Point(i, PadSize - 1)
+                            };
+                            successLines.Add(points);
                         }
                     }
                 }
@@ -257,10 +284,20 @@ namespace ClassicOOXX
                 }
                 return true;
             }
+            else if (GameState == State.Finished)
+            {
+                if (Callback != null)
+                {
+                    Callback.OnGameStateChanged(winnerId, GameState);
+                }
+                return true;
+            }
 
             return false;
         }
-        
+
+        public List<List<Point>> GetWinLines() { return successLines; }
+
     }
 
     

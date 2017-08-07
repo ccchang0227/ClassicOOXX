@@ -20,12 +20,16 @@ namespace ClassicOOXX
         public MainForm()
         {
             InitializeComponent();
+
+            // Source: https://www.codeproject.com/Articles/26071/Draw-Over-WinForms-Controls
+            graphicalOverlay.Owner = this;
+
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
+            
             Restart();
         }
 
@@ -88,6 +92,7 @@ namespace ClassicOOXX
                 item.BackgroundImage = null;
                 item.Enabled = true;
             }
+            Invalidate(true);
         }
 
         private void 開始新遊戲ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -122,6 +127,67 @@ namespace ClassicOOXX
             foreach (Button item in tableLayout.Controls.Cast<Button>())
             {
                 item.Enabled = false;
+            }
+
+            Invalidate(true);
+
+            /*
+            List<List<Point>> winnerLines = MainGamePad.GetWinLines();
+            if (winnerLines.Count == 0) { return; }
+
+            Graphics graphics = this.CreateGraphics();
+            foreach (List<Point> points in winnerLines)
+            {
+                if (points.Count != 2) { continue; }
+
+                Point start = points.ElementAt(0);
+                Point end = points.ElementAt(1);
+
+                Console.Out.WriteLine("start = " + start.ToString());
+                Console.Out.WriteLine("end = " + end.ToString());
+
+                Control startItem = tableLayout.GetControlFromPosition(start.Y, start.X);
+                Control endItem = tableLayout.GetControlFromPosition(end.Y, end.X);
+
+                start.X = startItem.Coordinates().X + startItem.Size.Width / 2;
+                start.Y = startItem.Coordinates().Y + startItem.Size.Height / 2;
+                end.X = endItem.Coordinates().X + endItem.Size.Width / 2;
+                end.Y = endItem.Coordinates().Y + endItem.Size.Height / 2;
+
+                Console.Out.WriteLine("start = " + start.ToString());
+                Console.Out.WriteLine("end = " + end.ToString());
+
+                Pen pen = new Pen(Color.Red, 10);
+                graphics.DrawLine(pen, start, end);
+
+            }
+            graphics.Dispose();
+            //*/
+
+        }
+        
+        private void graphicalOverlay_Paint(object sender, PaintEventArgs e)
+        {
+            List<List<Point>> winnerLines = MainGamePad.GetWinLines();
+            if (winnerLines.Count == 0) { return; }
+            
+            foreach (List<Point> points in winnerLines)
+            {
+                if (points.Count != 2) { continue; }
+
+                Point start = points.ElementAt(0);
+                Point end = points.ElementAt(1);
+
+                Control startItem = tableLayout.GetControlFromPosition(start.Y, start.X);
+                Control endItem = tableLayout.GetControlFromPosition(end.Y, end.X);
+                
+                start.X = startItem.Coordinates().X + startItem.Size.Width / 2;
+                start.Y = startItem.Coordinates().Y + startItem.Size.Height / 2;
+                end.X = endItem.Coordinates().X + endItem.Size.Width / 2;
+                end.Y = endItem.Coordinates().Y + endItem.Size.Height / 2;
+
+                Pen pen = new Pen(Color.Green, 10);
+                e.Graphics.DrawLine(pen, start, end);
             }
         }
 
