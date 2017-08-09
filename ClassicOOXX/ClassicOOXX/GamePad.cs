@@ -56,7 +56,8 @@ namespace ClassicOOXX
         public int[][] PadValues { get; }
         private int BlankCnt = PadSize ^ 2;
 
-        public int[] Players = { Player1Id, Player2Id };
+        //public int[] Players = { Player1Id, Player2Id };
+        public int[] Players = { ComId, Player1Id };
         public int Turn
         {
             get;
@@ -82,7 +83,11 @@ namespace ClassicOOXX
             BlankCnt = (int)Math.Pow(PadSize, 2);
 
             Turn = Players[0];
+            TurnCount = 1;
         }
+
+        // 回合數
+        public int TurnCount { get; private set; }
 
         // 換回合
         public void TurnChange()
@@ -95,6 +100,7 @@ namespace ClassicOOXX
             {
                 Turn = Players[0];
             }
+            TurnCount++;
 
             if (Callback != null)
             {
@@ -297,6 +303,8 @@ namespace ClassicOOXX
         }
 
         public List<List<Point>> GetWinLines() { return successLines; }
+
+        public bool IsAllBlank() { return (BlankCnt == (int)Math.Pow(PadSize, 2)); }
 
     }
 

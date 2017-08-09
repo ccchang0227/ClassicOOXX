@@ -12,10 +12,12 @@ using System.IO;
 
 namespace ClassicOOXX
 {
-    public partial class MainForm : Form, IGamePadCallback
+    public partial class MainForm : Form, IGamePadCallback, ISimpleAIAction
     {
 
         private GamePad MainGamePad;
+
+        private SimpleAI ComAI;
         
         public MainForm()
         {
@@ -29,7 +31,9 @@ namespace ClassicOOXX
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            
+
+            ComAI = new SimpleAI(this);
+
             Restart();
         }
 
@@ -46,16 +50,38 @@ namespace ClassicOOXX
             tableLocation.Y = (toolStripContainer.ContentPanel.Height - tableSize.Height) / 2;
             tableLayout.Location = tableLocation;
         }
-
+        
         private void OnButtonClick(object sender, EventArgs e)
         {
             Button button = (Button)sender;
             int x = tableLayout.GetRow(button);
             int y = tableLayout.GetColumn(button);
-            
+
+            SelectButton(x, y);
+        }
+        
+        private void 關於ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("作者：\n張智傑\nChih-chieh Chang\nccch.realtouch@gmail.com", "關於", MessageBoxButtons.OK);
+        }
+
+        private void 結束ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+        
+        private void 開始新遊戲ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Restart();
+        }
+
+        private void SelectButton(int x, int y)
+        {
+            Button button = (Button)tableLayout.GetControlFromPosition(y, x);
+
             if (!MainGamePad.Selectable(x, y)) { return; }
 
-            if (MainGamePad.Turn == GamePad.Player1Id)
+            if (MainGamePad.Turn == MainGamePad.Players[0])
             {
                 //button.Text = "O";
                 button.BackgroundImage = Properties.Resources.O;
@@ -72,20 +98,11 @@ namespace ClassicOOXX
                 MainGamePad.TurnChange();
             }
         }
-        
-        private void 關於ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("作者：\n張智傑\nChih-chieh Chang\nccch.realtouch@gmail.com", "關於", MessageBoxButtons.OK);
-        }
-
-        private void 結束ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
 
         private void Restart()
         {
             MainGamePad = new GamePad(this);
+
             foreach (Button item in tableLayout.Controls.Cast<Button>())
             {
                 item.Text = "";
@@ -93,11 +110,21 @@ namespace ClassicOOXX
                 item.Enabled = true;
             }
             Invalidate(true);
+
+            OnTurnChanged(MainGamePad.Turn);
+
+            Timer delayLoadAI = new Timer();
+            delayLoadAI.Interval = 500; //0.5 sec.
+            delayLoadAI.Tick += LoadAI;
+            delayLoadAI.Enabled = true;
+
         }
 
-        private void 開始新遊戲ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LoadAI(object sender, EventArgs e)
         {
-            Restart();
+            ((Timer)sender).Enabled = false;
+
+            ComAI.Load(MainGamePad);
         }
 
         private void EnableAllUnclickButtons()
@@ -124,6 +151,8 @@ namespace ClassicOOXX
 
         private void GameOver()
         {
+            ComAI.GameOver();
+
             foreach (Button item in tableLayout.Controls.Cast<Button>())
             {
                 item.Enabled = false;
@@ -199,14 +228,21 @@ namespace ClassicOOXX
             if (newTurn == GamePad.Player1Id)
             {
                 toolStripStatusLabel.Text = "輪到玩家1";
+
+                EnableAllUnclickButtons();
             }
             else if (newTurn == GamePad.Player2Id)
             {
                 toolStripStatusLabel.Text = "輪到玩家2";
+
+                EnableAllUnclickButtons();
             }
             else if (newTurn == GamePad.ComId)
             {
                 toolStripStatusLabel.Text = "輪到電腦";
+
+                DisableAllUnclickButtons();
+                ComAI.MyTurn();
             }
             
         }
@@ -248,6 +284,30 @@ namespace ClassicOOXX
             }
         }
         
+        // MARK - ISimpleAIAction
+
+        public void OnLoad()
+        {
+            Console.Out.WriteLine("OnLoad: "+MainGamePad.Players[0]+","+ MainGamePad.Players[1]);
+            Console.Out.WriteLine("OnLoad: " + MainGamePad.Turn);
+            if (MainGamePad.Turn == GamePad.ComId)
+            {
+                ComAI.MyTurn();
+            }
+        }
+
+        public void OnMeasuring()
+        {
+            Console.Out.WriteLine("OnMeasuring");
+        }
+
+        public void OnSelect(int x, int y)
+        {
+            EnableAllUnclickButtons();
+
+            Console.Out.WriteLine("OnSelect: " + x +","+y);
+            SelectButton(x, y);
+        }
     }
 
 }
